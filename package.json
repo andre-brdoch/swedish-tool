@@ -11,7 +11,9 @@
     "build-only": "vite build",
     "type-check": "vue-tsc --build --force",
     "lint": "eslint . --ext .vue,.js,.jsx,.cjs,.mjs,.ts,.tsx,.cts,.mts --fix --ignore-path .gitignore",
-    "format": "prettier --write src/"
+    "format:check": "npm run prettier --- --check",
+    "format:fix": "npm run prettier --- --write",
+    "prettier": "prettier . --ignore-path .gitignore"
   },
   "dependencies": {
     "pinia": "^2.1.7",
