@@ -1,0 +1,72 @@
+{
+  // === Linting & Formatting === //
+
+  "css.validate": false,
+  "less.validate": false,
+  "scss.validate": false,
+  "editor.codeActionsOnSave": [
+    "source.formatDocument",
+    "source.fixAll.eslint",
+    "source.fixAll.stylelint"
+  ],
+  "editor.defaultFormatter": "esbenp.prettier-vscode",
+  "[javascript]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  "[typescript]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  "editor.formatOnPaste": false,
+  "editor.formatOnSave": true,
+  "editor.formatOnSaveMode": "file",
+  "editor.formatOnType": false,
+  "eslint.alwaysShowStatus": true,
+  "eslint.format.enable": true,
+  "eslint.lintTask.enable": true,
+  "eslint.onIgnoredFiles": "warn",
+  "eslint.validate": ["javascript", "vue", "typescript"],
+  "html.format.endWithNewline": true,
+  "javascript.validate.enable": false,
+  "prettier.singleQuote": true,
+  "stylelint.validate": ["css", "vue"],
+  "files.eol": "\n",
+  "prettier.bracketSameLine": true,
+
+  // === Git === //
+
+  "git.confirmSync": false,
+  "git.autofetch": true,
+  "git.enableSmartCommit": false,
+  "diffEditor.codeLens": true,
+  "git.mergeEditor": false,
+  // disable to get inline diff view
+  "diffEditor.renderSideBySide": false,
+  // set to false to see ignored files
+  "explorer.excludeGitIgnore": false,
+  "files.exclude": {
+    "**/.git": false
+  },
+
+  // === LAYOUT === //
+  "editor.stickyScroll.enabled": true,
+  "editor.wordWrap": "on",
+  "workbench.editor.labelFormat": "short",
+  "workbench.startupEditor": "none",
+
+  // === OTHER === //
+  "emmet.includeLanguages": {
+    "vue-html": "html"
+  },
+  "emmet.triggerExpansionOnTab": true,
+  "explorer.confirmDelete": false,
+  "explorer.confirmDragAndDrop": false,
+  "javascript.updateImportsOnFileMove.enabled": "always",
+  "editor.minimap.enabled": false,
+  "security.workspace.trust.untrustedFiles": "open",
+  "search.useIgnoreFiles": true,
+  "search.exclude": {
+    "**/node_modules": true,
+    "**/bower_components": true,
+    "**/*.code-search": true
+  }
+}
