@@ -8,7 +8,6 @@ const result = ref<string | undefined>()
 const error = ref<string | undefined>()
 
 async function onSubmit(): Promise<void> {
-  console.log('submit', verb.value)
   if (verb.value == null) return
   await postVerb(verb.value)
 }
@@ -18,9 +17,6 @@ async function postVerb(verb: string): Promise<void> {
   try {
     const response = await fetch(url)
     const json = await response.json()
-    console.log(json)
-    const inflections = json[0].interpretations[0].inflections
-    console.log(inflections)
     result.value = json[0]
     error.value = undefined
   } catch (err) {
@@ -45,8 +41,8 @@ async function postVerb(verb: string): Promise<void> {
         <label for="verb-input">Verb</label>
         <div>
           <input
-            v-model="verb"
             id="verb-input"
+            v-model="verb"
             type="text"
           />
         </div>
