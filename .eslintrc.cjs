@@ -16,7 +16,7 @@ module.exports = {
   },
 
   // unignore our custom dot files
-  ignorePatterns: ['!.eslintrc.cjs', '!.prettierrc.json'],
+  ignorePatterns: ['!.eslintrc.cjs', '!.prettierrc.json', '.stylelintrc.json'],
 
   extends: ['plugin:vue/vue3-recommended', 'prettier', 'plugin:@typescript-eslint/strict'],
 
