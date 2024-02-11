@@ -37,22 +37,40 @@ async function postVerb(verb: string): Promise<void> {
   <main class="stack">
     <h1>Böj verb</h1>
 
-    <form class="form" @submit.prevent="onSubmit">
+    <form
+      class="form"
+      @submit.prevent="onSubmit"
+    >
       <div class="stack">
         <label for="verb-input">Verb</label>
         <div>
-          <input v-model="verb" id="verb-input" type="text" />
+          <input
+            v-model="verb"
+            id="verb-input"
+            type="text"
+          />
         </div>
       </div>
 
-      <input type="submit" value="Sök" />
+      <input
+        type="submit"
+        value="Sök"
+      />
     </form>
 
-    <div v-if="result" class="code">
+    <div
+      v-if="result"
+      class="code"
+    >
       <pre>{{ JSON.stringify(result, null, 2) }}</pre>
     </div>
 
-    <p v-if="error" class="error">{{ error }}</p>
+    <p
+      v-if="error"
+      class="error"
+    >
+      {{ error }}
+    </p>
   </main>
 </template>
 
