@@ -1,0 +1,48 @@
+name: Validate
+
+on: [pull_request]
+
+jobs:
+  validate:
+    name: test and validate
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Specify node version
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Run tests
+        id: test
+        run: npm run test
+        continue-on-error: true
+
+      - name: Run Typescript
+        id: ts
+        run: npm run ts:check
+        continue-on-error: true
+
+      - name: Run ESLint
+        id: lint
+        run: npm run lint:check
+        continue-on-error: true
+
+      - name: Run Prettier
+        id: format
+        run: npm run format:check
+        continue-on-error: true
+
+      - name: Run Stylelint
+        id: css
+        run: npm run css:check
+        continue-on-error: true
+
+      - name: Check for failures
+        if: steps.lint.outcome != 'success' || steps.test.outcome != 'success'
+        run: echo "lint ${{steps.lint.outcome}}, test ${{steps.test.outcome}}" && exit 1
