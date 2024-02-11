@@ -89,6 +89,6 @@ async function postVerb(verb: string): Promise<void> {
 }
 
 .error {
-  color: #ff0000;
+  color: #f00;
 }
 </style>
