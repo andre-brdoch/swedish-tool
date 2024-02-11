@@ -14,6 +14,8 @@
     "lint:fix": "npm run lint:check --- --fix",
     "format:check": "npm run prettier --- --check",
     "format:fix": "npm run prettier --- --write",
+    "css:check": "npx stylelint \"src/**/*.{vue,css}\" --ignore-path .gitignore",
+    "css:fix": "npm run css:check --- --fix",
     "prettier": "prettier . --ignore-path .gitignore"
   },
   "dependencies": {
