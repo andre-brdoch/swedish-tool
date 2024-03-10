@@ -1,22 +1,42 @@
 <script setup lang="ts">
 import { ref } from 'vue'
 
-const URL_INFLECT_VERB = 'https://skrutten.nada.kth.se/granskaapi/inflect/json/vb'
+interface GranskasInflection {
+  word: string
+  tag: string
+}
+
+interface GranskasInterpretation {
+  tag: string
+  inflections: GranskasInflection[]
+}
+
+type GranskasResponse = Array<{
+  word: string
+  interpretations: GranskasInterpretation[]
+}>
+
+const URL_INFLECT_VERB = 'https://skrutten.nada.kth.se/granskaapi/inflect/json'
 
 const verb = ref<string | undefined>()
-const result = ref<string | undefined>()
+const result = ref<GranskasResponse[number] | undefined>()
 const error = ref<string | undefined>()
 
 async function onSubmit(): Promise<void> {
   if (verb.value == null) return
-  await postVerb(verb.value)
+  await onSubmitVerb(verb.value)
 }
 
-async function postVerb(verb: string): Promise<void> {
+async function postVerb(verb: string): Promise<GranskasResponse> {
   const url = `${URL_INFLECT_VERB}/${verb}`
+  const response = await fetch(url)
+  const result = await response.json()
+  return result
+}
+
+async function onSubmitVerb(verb: string): Promise<void> {
   try {
-    const response = await fetch(url)
-    const json = await response.json()
+    const json = await postVerb(verb)
     result.value = json[0]
     error.value = undefined
   } catch (err) {
