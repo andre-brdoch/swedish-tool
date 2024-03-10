@@ -1,14 +1,28 @@
 <script setup lang="ts">
 import { ref } from 'vue'
 
+type GranskasTempus = 'imp' | 'inf' | 'prs' | 'prt' | 'sup'
+
+type GranskasModus = 'akt' | 'sfo'
+
+type GranskasVerbTag = `vb.${GranskasTempus}.${GranskasModus}`
+
+type GranskasMaybeTagAsterix = '' | ' *'
+
+type GranskasVerbTagFull = `${GranskasVerbTag}${GranskasMaybeTagAsterix}`
+
 interface GranskasInflection {
   word: string
   tag: string
 }
 
+interface GranskasVerbInflection extends GranskasInflection {
+  tag: GranskasVerbTag
+}
+
 interface GranskasInterpretation {
   tag: string
-  inflections: GranskasInflection[]
+  inflections: Array<GranskasVerbInflection | GranskasInflection>
 }
 
 type GranskasResponse = Array<{
@@ -16,10 +30,38 @@ type GranskasResponse = Array<{
   interpretations: GranskasInterpretation[]
 }>
 
+interface Inflection {
+  word: string
+}
+
+interface ActiveAndPassive {
+  active?: Inflection
+  passive?: Inflection
+}
+
+interface Inflections {
+  imperative?: ActiveAndPassive
+  infinitive?: ActiveAndPassive
+  present?: ActiveAndPassive
+  preterite?: ActiveAndPassive
+  supine?: ActiveAndPassive
+}
+
 const URL_INFLECT_VERB = 'https://skrutten.nada.kth.se/granskaapi/inflect/json'
+const TEMPI_MAP: Record<GranskasTempus, keyof Inflections> = {
+  imp: 'imperative',
+  inf: 'infinitive',
+  prs: 'present',
+  prt: 'preterite',
+  sup: 'supine',
+}
+const MODI_MAP: Record<GranskasModus, keyof ActiveAndPassive> = {
+  akt: 'active',
+  sfo: 'passive',
+}
 
 const verb = ref<string | undefined>()
-const result = ref<GranskasResponse[number] | undefined>()
+const result = ref<Inflections | undefined>()
 const error = ref<string | undefined>()
 
 async function onSubmit(): Promise<void> {
@@ -34,10 +76,42 @@ async function postVerb(verb: string): Promise<GranskasResponse> {
   return result
 }
 
+function isVerb(
+  granskaInflection: GranskasInflection
+): granskaInflection is GranskasVerbInflection {
+  return granskaInflection.tag.startsWith('vb.')
+}
+
+function extract(tag: GranskasVerbTagFull): {
+  tempus: GranskasTempus
+  modus: GranskasModus
+  asterix: boolean
+} {
+  const [x, maybeAsterix] = tag.split(' ') as [GranskasVerbTag, GranskasMaybeTagAsterix]
+  const [, tempus, modus] = x.split('.') as ['vb', GranskasTempus, GranskasModus]
+  return { tempus, modus, asterix: !!maybeAsterix }
+}
+
+function extractInflections(granskaResponse: GranskasResponse): Inflections {
+  const flattenedVerbs = granskaResponse[0].interpretations
+    .flatMap((interpretation) => interpretation.inflections)
+    .filter(isVerb)
+  const startVal: Inflections = {}
+  return flattenedVerbs.reduce((result, current) => {
+    const { tempus, modus } = extract(current.tag)
+    const tempusKey = TEMPI_MAP[tempus]
+    const modusKey = MODI_MAP[modus ?? 'akt']
+    if (result[tempusKey] == null) result[tempusKey] = {}
+    const valObj = { [modusKey]: current.word }
+    result[tempusKey] = { ...result[tempusKey], ...valObj }
+    return result
+  }, startVal)
+}
+
 async function onSubmitVerb(verb: string): Promise<void> {
   try {
-    const json = await postVerb(verb)
-    result.value = json[0]
+    const granskaResponse = await postVerb(verb)
+    result.value = extractInflections(granskaResponse)
     error.value = undefined
   } catch (err) {
     result.value = undefined
