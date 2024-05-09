@@ -19,6 +19,7 @@
     "prettier": "prettier . --ignore-path .gitignore"
   },
   "dependencies": {
+    "@tanstack/vue-query": "5.35.2",
     "pinia": "^2.1.7",
     "vue": "^3.4.15",
     "vue-router": "^4.2.5"
