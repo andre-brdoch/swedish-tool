@@ -1,5 +1,6 @@
 <script setup lang="ts">
-import { ref } from 'vue'
+import { ref, computed } from 'vue'
+import { useQuery } from '@tanstack/vue-query'
 
 type GranskasTempus = 'imp' | 'inf' | 'prs' | 'prt' | 'sup'
 
@@ -60,13 +61,28 @@ const MODI_MAP: Record<GranskasModus, keyof ActiveAndPassive> = {
   sfo: 'passive',
 }
 
-const verb = ref<string | undefined>()
-const result = ref<Inflections | undefined>()
-const error = ref<string | undefined>()
+const inputVerbModel = ref<string | undefined>()
+const activeVerb = ref<string | undefined>()
+
+const {
+  data: granskaResponse,
+  error,
+  isLoading,
+} = useQuery({
+  queryKey: [activeVerb],
+  queryFn: async () => {
+    if (activeVerb.value == null) return null
+    return await postVerb(activeVerb.value)
+  },
+})
+const result = computed(() => {
+  if (granskaResponse.value == null) return null
+  return extractInflections(granskaResponse.value)
+})
 
 async function onSubmit(): Promise<void> {
-  if (verb.value == null) return
-  await onSubmitVerb(verb.value)
+  if (inputVerbModel.value == null) return
+  activeVerb.value = inputVerbModel.value
 }
 
 async function postVerb(verb: string): Promise<GranskasResponse> {
@@ -87,8 +103,8 @@ function extract(tag: GranskasVerbTagFull): {
   modus: GranskasModus
   asterix: boolean
 } {
-  const [x, maybeAsterix] = tag.split(' ') as [GranskasVerbTag, GranskasMaybeTagAsterix]
-  const [, tempus, modus] = x.split('.') as ['vb', GranskasTempus, GranskasModus]
+  const [dotSeparated, maybeAsterix] = tag.split(' ') as [GranskasVerbTag, GranskasMaybeTagAsterix]
+  const [, tempus, modus] = dotSeparated.split('.') as ['vb', GranskasTempus, GranskasModus]
   return { tempus, modus, asterix: !!maybeAsterix }
 }
 
@@ -107,20 +123,6 @@ function extractInflections(granskaResponse: GranskasResponse): Inflections {
     return result
   }, startVal)
 }
-
-async function onSubmitVerb(verb: string): Promise<void> {
-  try {
-    const granskaResponse = await postVerb(verb)
-    result.value = extractInflections(granskaResponse)
-    error.value = undefined
-  } catch (err) {
-    result.value = undefined
-    error.value = 'Något gick fel'
-    if (err instanceof Error && err.message) {
-      error.value = err.message
-    }
-  }
-}
 </script>
 
 <template>
@@ -136,7 +138,7 @@ async function onSubmitVerb(verb: string): Promise<void> {
         <div>
           <input
             id="verb-input"
-            v-model="verb"
+            v-model="inputVerbModel"
             type="text"
           />
         </div>
@@ -147,6 +149,8 @@ async function onSubmitVerb(verb: string): Promise<void> {
         value="Sök"
       />
     </form>
+
+    <p v-if="isLoading">loading...</p>
 
     <div
       v-if="result"
@@ -159,7 +163,8 @@ async function onSubmitVerb(verb: string): Promise<void> {
       v-if="error"
       class="error"
     >
-      {{ error }}
+      {{ error.name }}
+      {{ error.message }}
     </p>
   </main>
 </template>
