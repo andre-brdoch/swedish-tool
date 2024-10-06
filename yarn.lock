@@ -32,6 +32,15 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@andre-brdoch/prettier-config@npm:^0.0.1":
+  version: 0.0.1
+  resolution: "@andre-brdoch/prettier-config@npm:0.0.1"
+  peerDependencies:
+    prettier: ^3.0.0
+  checksum: 10c0/b3e25523350fe0444ec538c8c85045c36eed888c47a92b82ba27b74dd6cf4f84602d846f69e8555320141c39223b30e6bfe3bfa19d940fe198fd3c7127dba9f8
+  languageName: node
+  linkType: hard
+
 "@babel/code-frame@npm:^7.0.0":
   version: 7.23.5
   resolution: "@babel/code-frame@npm:7.23.5"
@@ -4173,6 +4182,7 @@ __metadata:
   dependencies:
     "@andre-brdoch/eslint-config": "npm:^1.0.1"
     "@andre-brdoch/eslint-config-vitest": "npm:0.0.2"
+    "@andre-brdoch/prettier-config": "npm:^0.0.1"
     "@rushstack/eslint-patch": "npm:^1.3.3"
     "@tsconfig/node20": "npm:^20.1.2"
     "@types/jsdom": "npm:^21.1.6"
