@@ -18,17 +18,9 @@ module.exports = {
   // unignore our custom dot files
   ignorePatterns: ['!.eslintrc.cjs', '!.prettierrc.json', '.stylelintrc.json'],
 
-  extends: ['plugin:vue/vue3-recommended', 'prettier', 'plugin:@typescript-eslint/strict'],
+  extends: ['@andre-brdoch/eslint-config', 'plugin:vue/vue3-recommended', 'prettier', 'plugin:@typescript-eslint/strict'],
 
   rules: {
-    'no-debugger': 'error',
-    'no-console': ['error', { allow: ['warn', 'error'] }],
-    'no-case-declarations': 'off',
-    'no-constant-binary-expression': ['error'],
-    'no-undef': 'error',
-    'prefer-const': ['error', { destructuring: 'all' }],
-    'prefer-promise-reject-errors': 'error',
-
     // typescript
 
     '@typescript-eslint/no-dynamic-delete': 'error',
